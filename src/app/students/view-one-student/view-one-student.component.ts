@@ -2,6 +2,8 @@ import { Component,OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { student } from 'src/app/models/api-models/studentmodel';
 import {StudentService} from '../student.service';
+import { GenderService  } from 'src/app/services/gender.service';
+import { Gender } from 'src/app/models/api-models/gendermodel';
 @Component({
   selector: 'app-view-one-student',
   templateUrl: './view-one-student.component.html',
@@ -9,9 +11,12 @@ import {StudentService} from '../student.service';
 })
 export class ViewOneStudentComponent implements OnInit{
 
-  constructor(private readonly studentService : StudentService,private readonly route :ActivatedRoute){}
+  constructor(private readonly studentService : StudentService
+    ,private readonly genderService : GenderService
+    ,private readonly route :ActivatedRoute){}
 
   studentId: string | null | undefined;
+  //student from api-models
   student: student={
     id:'',
     firstName:'',
@@ -32,6 +37,9 @@ export class ViewOneStudentComponent implements OnInit{
     }
 
   }
+  //Gender is from ui-models
+  genderList : Gender[] = [];
+
 
 
 
@@ -46,6 +54,11 @@ export class ViewOneStudentComponent implements OnInit{
             console.log(successResponse);
           }
         );
+        this.genderService.getGenderList().subscribe((successresponses)=>{
+          //we use this genderlist (from ui-model to use in html file)
+          this.genderList = successresponses;
+        });
+
      }
     });
   }
