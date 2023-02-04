@@ -15,4 +15,9 @@ export class StudentService {
   getStudent() : Observable<student[]>{
     return this.httpClient.get<student[]>(this.baseApiUrl+"/Student");
   }
+//this.baseApiUrl+"/Student":c'est le lien vers l'api
+  getStudentById(studentId: string){
+
+    return this.httpClient.get<student>(this.baseApiUrl+"/Student/"+studentId);
+  }
 }
