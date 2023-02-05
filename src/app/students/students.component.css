@@ -14,3 +14,7 @@ table{
 .search-input:focus{
   border: 1px solid #AAA;
 }
+
+.btnadd{
+  margin-left: 1em;
+}

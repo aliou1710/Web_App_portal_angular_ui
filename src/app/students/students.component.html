@@ -9,8 +9,9 @@
     <!-- from flexboxgrid -->
     <div class="col-xs-12">
       <input type="text"  class="search-input" placeholder ="Search students"
-      #inputsecond (keyup)="filterStudents(inputsecond.value)"
-      >
+      #inputsecond (keyup)="filterStudents(inputsecond.value)">
+
+      <a class="btnadd" routerLink="/students/add" mat-raised-button color="primary">Add new Student</a>
 
     </div>
   </div>

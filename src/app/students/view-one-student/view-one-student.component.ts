@@ -1,5 +1,5 @@
 import { Component,OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { student } from 'src/app/models/api-models/studentmodel';
 import {StudentService} from '../student.service';
 import { GenderService  } from 'src/app/services/gender.service';
@@ -15,7 +15,8 @@ export class ViewOneStudentComponent implements OnInit{
   constructor(private readonly studentService : StudentService
     ,private readonly genderService : GenderService
     ,private readonly route :ActivatedRoute,
-    private readonly snackbar : MatSnackBar){}
+    private readonly snackbar : MatSnackBar,
+    private readonly router : Router){}
 
   studentId: string | null | undefined;
   //student from api-models
@@ -41,8 +42,8 @@ export class ViewOneStudentComponent implements OnInit{
   }
   //Gender is from ui-models
   genderList : Gender[] = [];
-
-
+  isNewStudent = false;
+  header="";
 
 
   ngOnInit(): void {
@@ -50,16 +51,29 @@ export class ViewOneStudentComponent implements OnInit{
      this.studentId = params.get('id');
 
      if(this.studentId){
+      //if the route contains the keyword 'Add' => we will have  a new student Functionnality
+      if(this.studentId.toLocaleLowerCase()==='Add'.toLocaleLowerCase()){
+        //new functionnality
+        this.isNewStudent = true;
+        this.header = 'Add New Student';
+      }
+      else{
+        //existing functionnality( pour modifier un student)
+        this.isNewStudent = false;
+        this.header = 'Edit Student';
+
         this.studentService.getStudentById(this.studentId).subscribe(
           (successResponse)=>{
            this.student = successResponse;
             console.log(successResponse);
           }
         );
-        this.genderService.getGenderList().subscribe((successresponses)=>{
-          //we use this genderlist (from ui-model to use in html file)
-          this.genderList = successresponses;
-        });
+
+      }
+      this.genderService.getGenderList().subscribe((successresponses)=>{
+        //we use this genderlist (from ui-model to use in html file)
+        this.genderList = successresponses;
+      });
 
      }
     });
@@ -80,5 +94,43 @@ export class ViewOneStudentComponent implements OnInit{
         console.log(errorResponse);
       }
     );
+  }
+   onDeleteStudent():void{
+  //   this.studentService.deleteStudent_(this.studentId).subscribe(
+  //     (successResponse)=>{
+  //       console.log(successResponse)
+  //       this.snackbar.open('Student deleted Succesfully', undefined,
+  //       {
+  //         duration:2000
+  //       });
+  //       setTimeout(()=>{
+  //         this.router.navigateByUrl('students');
+  //       },2000);
+  //     },
+  //     (errorResponse)=>{
+  //       console.log(errorResponse);
+  //     }
+  //   );
+
+  }
+
+  onAddStudent():void{
+    this.studentService.addStudent_(this.student).subscribe(
+    (successResponse)=>{
+       //show notification
+      this.snackbar.open('Student updated succesfuly',undefined,{
+      //en ms
+      duration:2000
+      });
+      setTimeout(()=>{
+        this.router.navigateByUrl('students/${successResponse.id}');
+      },2000);
+      console.log(successResponse);
+    },
+    (errorResponse)=>{
+      //log
+      console.log(errorResponse);
+    });
+
   }
 }
