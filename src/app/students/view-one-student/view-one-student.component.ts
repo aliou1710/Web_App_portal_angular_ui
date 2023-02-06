@@ -16,7 +16,7 @@ export class ViewOneStudentComponent implements OnInit{
     ,private readonly genderService : GenderService
     ,private readonly route :ActivatedRoute,
     private readonly snackbar : MatSnackBar,
-    private readonly router : Router){}
+    private router : Router){}
 
   studentId: string | null | undefined;
   //student from api-models
@@ -96,21 +96,21 @@ export class ViewOneStudentComponent implements OnInit{
     );
   }
    onDeleteStudent():void{
-  //   this.studentService.deleteStudent_(this.studentId).subscribe(
-  //     (successResponse)=>{
-  //       console.log(successResponse)
-  //       this.snackbar.open('Student deleted Succesfully', undefined,
-  //       {
-  //         duration:2000
-  //       });
-  //       setTimeout(()=>{
-  //         this.router.navigateByUrl('students');
-  //       },2000);
-  //     },
-  //     (errorResponse)=>{
-  //       console.log(errorResponse);
-  //     }
-  //   );
+    this.studentService.deleteStudent_(this.student.id).subscribe(
+      (successResponse)=>{
+        console.log(successResponse);
+        this.snackbar.open('Student deleted Succesfully', undefined,
+        {
+          duration:2000
+        });
+        setTimeout(()=>{
+          this.router.navigateByUrl('students');
+        },2000);
+      },
+      (errorResponse)=>{
+        console.log(errorResponse);
+      }
+    );
 
   }
 
