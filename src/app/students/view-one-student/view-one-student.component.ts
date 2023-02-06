@@ -44,6 +44,7 @@ export class ViewOneStudentComponent implements OnInit{
   genderList : Gender[] = [];
   isNewStudent = false;
   header="";
+  displayProfileImageUrl ="";
 
 
   ngOnInit(): void {
@@ -56,6 +57,7 @@ export class ViewOneStudentComponent implements OnInit{
         //new functionnality
         this.isNewStudent = true;
         this.header = 'Add New Student';
+        this.SetImage();
       }
       else{
         //existing functionnality( pour modifier un student)
@@ -65,7 +67,11 @@ export class ViewOneStudentComponent implements OnInit{
         this.studentService.getStudentById(this.studentId).subscribe(
           (successResponse)=>{
            this.student = successResponse;
+           this.SetImage();
             console.log(successResponse);
+          },(errorResponse)=>{
+            this.SetImage();
+            console.log(errorResponse);
           }
         );
 
@@ -104,7 +110,7 @@ export class ViewOneStudentComponent implements OnInit{
           duration:2000
         });
         setTimeout(()=>{
-          this.router.navigateByUrl('students');
+          this.router.navigateByUrl('students ');
         },2000);
       },
       (errorResponse)=>{
@@ -133,4 +139,45 @@ export class ViewOneStudentComponent implements OnInit{
     });
 
   }
+
+
+
+  //images
+  private SetImage():void{
+    //profileImageUrl not empty
+    if(this.student.profileImageUrl!="-" && this.student.profileImageUrl!=null ){
+      //fetch the image by url
+      this.displayProfileImageUrl = this.studentService.getImagePath(this.student.profileImageUrl);
+    }else{
+      //Display a default
+      this.displayProfileImageUrl ='../../../assets/profile.jpg';
+
+    }
+  }
+  uploadImage(event:any):void{
+    if(this.studentId){
+      const file : File = event.target.files[0];
+      this.studentService.uploadImage(this.student.id,file).subscribe(
+        (successResponse)=>{
+          console.log("success");
+          this.student.profileImageUrl= successResponse;
+          this.SetImage();
+
+
+        //show notification
+        this.snackbar.open('Student updated succesfuly',undefined,{
+          //en ms
+          duration:2000
+        });
+          //
+      },
+      (errorResponse)=>{
+        console.log("error");
+        console.log(errorResponse);
+      });
+
+    }
+  }
+
+
 }
